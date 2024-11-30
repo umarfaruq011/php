@@ -1,3 +1,12 @@
+<?php
+// index.php
+
+// Display the uploaded image if it exists
+if (isset($_GET['image'])) {
+    echo '<div><img src="' . $_GET['image'] . '" alt="Uploaded Image" style="max-width: 100%; height: auto; margin-top: 20px;"></div>';
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -93,32 +102,6 @@
         button:hover {
             background-color: #505355;
         }
-        /* Loading spinner */
-        .loading {
-            display: none;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 24px;
-        }
-        /* File upload section */
-        .file-upload {
-            margin-top: 1px;
-            text-align: left;
-            margin-left: 0;
-        }
-        .file-input {
-            padding: 10px;
-            border-radius: 4px;
-            background-color: #303134;
-            color: white;
-            border: 1px solid #303134;
-            cursor: pointer;
-        }
-        .file-input:hover {
-            background-color: #505355;
-        }
     </style>
 </head>
 <body>
@@ -155,7 +138,6 @@
     <!-- File Upload Section -->
     <div class="file-upload">
         <h2>Upload a File</h2>
-        <!-- File upload form with enctype attribute -->
         <form action="upload.php" method="POST" enctype="multipart/form-data">
             <input type="file" class="file-input" name="fileToUpload" id="fileInput" required>
             <button type="submit" class="file-input">Upload File</button>
@@ -177,7 +159,6 @@
         function feelingLucky() {
             const query = document.getElementById('input').value;
             if (query) {
-                // Redirect to the first result of the search (Google's "I'm Feeling Lucky")
                 window.location.href = `https://www.google.com/search?q=${encodeURIComponent(query)}&btnI=I`;
             } else {
                 alert('Please enter a search query first.');
