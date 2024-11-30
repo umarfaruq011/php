@@ -1,52 +1,39 @@
 <?php
-// Define the directory to save uploaded files
+// upload.php
+
+// Directory to store the uploaded file
 $target_dir = "uploads/";
 
-// Create uploads directory if it doesn't exist
-if (!file_exists($target_dir)) {
+// Create the uploads directory if it doesn't exist
+if (!is_dir($target_dir)) {
     mkdir($target_dir, 0777, true);
 }
 
-// Get the file information
 $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
-$uploadOk = 1;
-$fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+$imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
-// Check if the file is a real image or just a fake one
+// Check if file is an actual image (optional step)
 if (isset($_POST["submit"])) {
     $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
-    if ($check !== false) {
-        echo "File is an image - " . $check["mime"] . ".<br>";
-        $uploadOk = 1;
-    } else {
-        echo "File is not an image.<br>";
-        $uploadOk = 0;
+    if ($check === false) {
+        echo "File is not an image.";
+        exit;
     }
 }
 
-// Check if file already exists
-if (file_exists($target_file)) {
-    echo "Sorry, file already exists.<br>";
-    $uploadOk = 0;
+// Allow certain file formats (optional step)
+if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
+    echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+    exit;
 }
 
-// Check file size (limit to 10MB for example)
-if ($_FILES["fileToUpload"]["size"] > 10000000) {
-    echo "Sorry, your file is too large.<br>";
-    $uploadOk = 0;
-}
-
-// Allow certain file formats
-if ($fileType != "jpg" && $fileType != "png" && $fileType != "jpeg" && $fileType != "gif") {
-    echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.<br>";
-    $uploadOk = 0;
-}
-
-// Check if $uploadOk is set to 0 by an error
-if ($uploadOk == 0) {
-    echo "Sorry, your file was not uploaded.<br>";
+// Try to upload the file
+if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
+    echo "The file " . basename($_FILES["fileToUpload"]["name"]) . " has been uploaded.";
+    // Redirect back to the main page to display the image
+    header("Location: index.php?image=" . urlencode($target_file));
+    exit;
 } else {
-    if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-        echo "The file " . htmlspecialchars(basename($_FILES["fileToUpload"]["name"])) . " has been uploaded.<br>";
-    } else {
-        echo "Sorry, there was an error uploading
+    echo "Sorry, there was an error uploading your file.";
+}
+?>
